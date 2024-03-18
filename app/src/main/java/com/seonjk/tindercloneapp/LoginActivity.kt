@@ -15,6 +15,7 @@ import com.google.firebase.auth.FacebookAuthProvider
 import com.seonjk.tindercloneapp.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
@@ -65,8 +66,13 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        Toast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_LONG).show()
         val userId = auth.currentUser?.uid.orEmpty()
+        val currentUserDB = Firebase.database.reference.child("Users").child(userId)
+        val user = mutableMapOf<String, Any>()
+        user["userId"] = userId
+        currentUserDB.updateChildren(user)
+
+        Toast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_LONG).show()
     }
 
     private fun initSignUpButton() {
